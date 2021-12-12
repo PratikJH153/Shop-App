@@ -12,7 +12,7 @@ class ProductsOverviewPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text("MyShop"),
       ),
-      body: ProductGrid(),
+      body: const ProductGrid(),
     );
   }
 }
