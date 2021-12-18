@@ -37,8 +37,29 @@ class Products with ChangeNotifier {
     ),
   ];
 
+  // bool _showFavoritesOnly = false;
+
   // It just returns the copy of the _items List beacuse it shouldn't affect the actual _items list
-  List<Product> get items => [..._items];
+  List<Product> get items {
+    // if (_showFavoritesOnly) {
+    //   return _items.where((product) => product.isFavorite).toList();
+    // }
+    return [..._items];
+  }
+
+  List<Product> get favoriteItems {
+    return _items.where((product) => product.isFavorite).toList();
+  }
+
+  // void showFavoritesOnly() {
+  //   _showFavoritesOnly = true;
+  //   notifyListeners();
+  // }
+
+  // void showAll() {
+  //   _showFavoritesOnly = false;
+  //   notifyListeners();
+  // }
 
   Product findByID(String id) {
     return _items.firstWhere((product) => product.id == id);
