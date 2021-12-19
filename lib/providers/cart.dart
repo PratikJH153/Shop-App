@@ -15,7 +15,7 @@ class CartItem {
 }
 
 class Cart with ChangeNotifier {
-  late Map<String, CartItem> _items;
+  Map<String, CartItem> _items = {};
 
   Map<String, CartItem> get items => {..._items};
 
@@ -44,4 +44,6 @@ class Cart with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  int get itemCount => _items.length;
 }
