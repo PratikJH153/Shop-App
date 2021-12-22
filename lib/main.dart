@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:shopapp/providers/cart.dart';
 import 'package:shopapp/providers/orders.dart';
 import 'package:shopapp/views/cart_page.dart';
+import 'package:shopapp/views/edit_product_page.dart';
 import 'package:shopapp/views/orders_page.dart';
+import 'package:shopapp/views/user_products_page.dart';
 
 import '../providers/products.dart';
 import '../views/product_details_page.dart';
@@ -46,6 +48,8 @@ class MyApp extends StatelessWidget {
           ProductDetailsPage.routeName: (ctx) => const ProductDetailsPage(),
           CartPage.routeName: (ctx) => const CartPage(),
           OrdersPage.routeName: (ctx) => const OrdersPage(),
+          UserProductsPage.routeName: (ctx) => const UserProductsPage(),
+          EditProductPage.routeName: (ctx) => const EditProductPage(),
         },
       ),
     );
