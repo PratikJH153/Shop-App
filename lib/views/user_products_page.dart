@@ -9,6 +9,10 @@ class UserProductsPage extends StatelessWidget {
   static const routeName = "/userproducts";
   const UserProductsPage({Key? key}) : super(key: key);
 
+  Future<void> _refreshProducts(BuildContext context) async {
+    await Provider.of<Products>(context, listen: false).fetchAndSetProducts();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,26 +29,29 @@ class UserProductsPage extends StatelessWidget {
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8),
-        child: Consumer<Products>(
-          builder: (ctx, products, _) {
-            return ListView.builder(
-              itemBuilder: (ctx, index) {
-                return Column(
-                  children: [
-                    UserProductItem(
-                      id: products.items[index].id,
-                      title: products.items[index].title,
-                      imageURL: products.items[index].imageUrl,
-                    ),
-                    const Divider(),
-                  ],
-                );
-              },
-              itemCount: products.items.length,
-            );
-          },
+      body: RefreshIndicator(
+        onRefresh: () => _refreshProducts(context),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Consumer<Products>(
+            builder: (ctx, products, _) {
+              return ListView.builder(
+                itemBuilder: (ctx, index) {
+                  return Column(
+                    children: [
+                      UserProductItem(
+                        id: products.items[index].id,
+                        title: products.items[index].title,
+                        imageURL: products.items[index].imageUrl,
+                      ),
+                      const Divider(),
+                    ],
+                  );
+                },
+                itemCount: products.items.length,
+              );
+            },
+          ),
         ),
       ),
     );
