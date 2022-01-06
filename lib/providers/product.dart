@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
 
 class Product with ChangeNotifier {
   final String id;
@@ -17,8 +20,31 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void toggleFavorite() {
+  void _setFavValue(newValue) {
+    isFavorite = newValue;
+    notifyListeners();
+  }
+
+  void toggleFavorite() async {
+    var url = Uri.parse(
+        "https://shopappflutter-1a36e-default-rtdb.firebaseio.com/products/$id.json");
+    var oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
+    try {
+      var response = await http.patch(
+        url,
+        body: json.encode(
+          {
+            "isFavorite": isFavorite,
+          },
+        ),
+      );
+      if (response.statusCode >= 400) {
+        _setFavValue(oldStatus);
+      }
+    } catch (err) {
+      _setFavValue(oldStatus);
+    }
   }
 }

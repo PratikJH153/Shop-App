@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shopapp/models/http_exception.dart';
 
 import './product.dart';
 
@@ -145,19 +146,53 @@ class Products with ChangeNotifier {
     }
   }
 
-  void updateProduct(String id, Product newProduct) {
+  Future<void> updateProduct(String id, Product newProduct) async {
     final prodIndex = _items.indexWhere((product) => product.id == id);
     if (prodIndex >= 0) {
-      _items[prodIndex] = newProduct;
-      notifyListeners();
+      final url = Uri.parse(
+        "https://shopappflutter-1a36e-default-rtdb.firebaseio.com/products/$id.json",
+      );
+      try {
+        await http.patch(
+          url,
+          body: json.encode(
+            {
+              "title": newProduct.title,
+              "description": newProduct.description,
+              "imageUrl": newProduct.imageUrl,
+              "price": newProduct.price,
+            },
+          ),
+        );
+        _items[prodIndex] = newProduct;
+        notifyListeners();
+      } catch (err) {
+        print(err);
+        throw err;
+      }
     } else {
       print("CANT UPDATE");
     }
   }
 
-  void deleteProduct(String id) {
-    _items.removeWhere((product) => product.id == id);
+  Future<void> deleteProduct(String id) async {
+    // OPTIMISTIC UPDATING APPROACH
+    final url = Uri.parse(
+      "https://shopappflutter-1a36e-default-rtdb.firebaseio.com/products/$id.json",
+    );
+    final existingProductIndex =
+        _items.indexWhere((product) => product.id == id);
+    var existingProduct = _items[existingProductIndex];
+
+    _items.removeAt(existingProductIndex);
     notifyListeners();
+    final response = await http.delete(url);
+    if (response.statusCode >= 400) {
+      _items.insert(existingProductIndex, existingProduct);
+      notifyListeners();
+      throw HttpException("Could not delete product.");
+    }
+    existingProduct.dispose();
   }
 
   // void showFavoritesOnly() {

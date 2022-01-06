@@ -78,7 +78,7 @@ class _EditProductPageState extends State<EditProductPage> {
         Navigator.of(context).pop();
       }
     } else {
-      Provider.of<Products>(context, listen: false).updateProduct(
+      await Provider.of<Products>(context, listen: false).updateProduct(
         _editedProduct.id,
         _editedProduct,
       );
