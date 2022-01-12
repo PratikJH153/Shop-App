@@ -14,7 +14,7 @@ enum PopMenuOptions {
 }
 
 class ProductsOverviewPage extends StatefulWidget {
-  static const routeName = "/";
+  static const routeName = "/product_overview";
   const ProductsOverviewPage({Key? key}) : super(key: key);
 
   @override

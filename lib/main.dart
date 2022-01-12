@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shopapp/providers/auth.dart';
 import 'package:shopapp/providers/cart.dart';
 import 'package:shopapp/providers/orders.dart';
+import 'package:shopapp/views/auth_screen.dart';
 import 'package:shopapp/views/cart_page.dart';
 import 'package:shopapp/views/edit_product_page.dart';
 import 'package:shopapp/views/orders_page.dart';
@@ -21,6 +23,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
+          create: (ctx) => Auth(),
+        ),
+        ChangeNotifierProvider(
           create: (ctx) => Products(),
         ),
         ChangeNotifierProvider(
@@ -30,27 +35,31 @@ class MyApp extends StatelessWidget {
           create: (ctx) => Orders(),
         ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: "Shop App",
-        theme: ThemeData(
-          primarySwatch: Colors.purple,
-          errorColor: Colors.red,
-          fontFamily: 'Lato',
-          colorScheme: ColorScheme.fromSwatch(
+      child: Consumer<Auth>(
+        builder: (ctx, auth, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: "Shop App",
+          theme: ThemeData(
             primarySwatch: Colors.purple,
-            accentColor: Colors.deepOrange,
+            errorColor: Colors.red,
+            fontFamily: 'Lato',
+            colorScheme: ColorScheme.fromSwatch(
+              primarySwatch: Colors.purple,
+              accentColor: Colors.deepOrange,
+            ),
           ),
+          home: auth.isAuth ? const ProductsOverviewPage() : const AuthScreen(),
+          routes: {
+            AuthScreen.routeName: (ctx) => const AuthScreen(),
+            ProductsOverviewPage.routeName: (ctx) =>
+                const ProductsOverviewPage(),
+            ProductDetailsPage.routeName: (ctx) => const ProductDetailsPage(),
+            CartPage.routeName: (ctx) => const CartPage(),
+            OrdersPage.routeName: (ctx) => const OrdersPage(),
+            UserProductsPage.routeName: (ctx) => const UserProductsPage(),
+            EditProductPage.routeName: (ctx) => const EditProductPage(),
+          },
         ),
-        initialRoute: ProductsOverviewPage.routeName,
-        routes: {
-          ProductsOverviewPage.routeName: (ctx) => const ProductsOverviewPage(),
-          ProductDetailsPage.routeName: (ctx) => const ProductDetailsPage(),
-          CartPage.routeName: (ctx) => const CartPage(),
-          OrdersPage.routeName: (ctx) => const OrdersPage(),
-          UserProductsPage.routeName: (ctx) => const UserProductsPage(),
-          EditProductPage.routeName: (ctx) => const EditProductPage(),
-        },
       ),
     );
   }
