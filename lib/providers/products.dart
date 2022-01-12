@@ -42,6 +42,10 @@ class Products with ChangeNotifier {
     // ),
   ];
 
+  final String? authToken;
+
+  Products(this.authToken, this._items);
+
   // bool _showFavoritesOnly = false;
 
   // It just returns the copy of the _items List beacuse it shouldn't affect the actual _items list
@@ -58,7 +62,7 @@ class Products with ChangeNotifier {
 
   Future<void> fetchAndSetProducts() async {
     final url = Uri.parse(
-      "https://shopappflutter-1a36e-default-rtdb.firebaseio.com/products.json",
+      "https://shopappflutter-1a36e-default-rtdb.firebaseio.com/products.json?auth=$authToken",
     );
     try {
       var response = await http.get(url);
@@ -86,7 +90,7 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     final url = Uri.parse(
-      "https://shopappflutter-1a36e-default-rtdb.firebaseio.com/products.json",
+      "https://shopappflutter-1a36e-default-rtdb.firebaseio.com/products.json?auth=$authToken",
     );
 
     // return http
@@ -126,7 +130,6 @@ class Products with ChangeNotifier {
           "description": product.description,
           "imageUrl": product.imageUrl,
           "price": product.price,
-          "isFavorite": product.isFavorite,
         }),
       );
 
@@ -150,7 +153,7 @@ class Products with ChangeNotifier {
     final prodIndex = _items.indexWhere((product) => product.id == id);
     if (prodIndex >= 0) {
       final url = Uri.parse(
-        "https://shopappflutter-1a36e-default-rtdb.firebaseio.com/products/$id.json",
+        "https://shopappflutter-1a36e-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken",
       );
       try {
         await http.patch(
@@ -178,7 +181,7 @@ class Products with ChangeNotifier {
   Future<void> deleteProduct(String id) async {
     // OPTIMISTIC UPDATING APPROACH
     final url = Uri.parse(
-      "https://shopappflutter-1a36e-default-rtdb.firebaseio.com/products/$id.json",
+      "https://shopappflutter-1a36e-default-rtdb.firebaseio.com/products/$id.json?auth=$authToken",
     );
     final existingProductIndex =
         _items.indexWhere((product) => product.id == id);
